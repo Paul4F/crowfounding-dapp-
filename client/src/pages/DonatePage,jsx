@@ -1,0 +1,76 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import Donate from './Donate'; // El componente de donación que ya tienes
+
+const DonatePage = ({ web3, accounts, contract }) => {
+  const { campaignId } = useParams(); // Obtener el ID de la campaña de la URL
+  const [campaign, setCampaign] = useState(null);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    // Aquí deberías hacer una llamada a la API o contrato para obtener la campaña por su ID
+    // Simulamos la carga de datos de la campaña con una estructura básica
+    const fetchCampaign = async (id) => {
+      // Simulando la obtención de la campaña
+      const campaigns = [
+        { id: 1, name: 'Campaña de Educación', description: 'Apoya la educación de niños en áreas rurales.' },
+        { id: 2, name: 'Campaña de Salud', description: 'Ayuda a financiar tratamientos médicos para personas sin recursos.' },
+        { id: 3, name: 'Campaña Ambiental', description: 'Contribuye a la protección del medio ambiente.' },
+      ];
+      const selectedCampaign = campaigns.find((campaign) => campaign.id === parseInt(id));
+      setCampaign(selectedCampaign);
+    };
+
+    fetchCampaign(campaignId);
+  }, [campaignId]);
+
+  return (
+    <div>
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <div className="container-fluid">
+          <Link className="navbar-brand" to="/">Mi Campaña</Link>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <Link className="nav-link active" to="/">Inicio</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/donar">Donar</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/campañas">Campañas</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      {/* Página de Donación */}
+      <div className="container mt-5">
+        {campaign ? (
+          <>
+            <h1>Donar a {campaign.name}</h1>
+            <p>{campaign.description}</p>
+
+            {/* Formulario de donación */}
+            <div className="card p-4">
+              <h4>Realiza tu donación</h4>
+              <Donate web3={web3} accounts={accounts} contract={contract} campaignId={campaign.id} />
+            </div>
+          </>
+        ) : (
+          <p>Cargando información de la campaña...</p>
+        )}
+
+        {/* Mensajes de Estado */}
+        {message && <div className="alert alert-info mt-3">{message}</div>}
+      </div>
+    </div>
+  );
+};
+
+export default DonatePage;
